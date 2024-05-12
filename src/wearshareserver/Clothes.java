@@ -2,11 +2,11 @@
 package wearshareserver;
 
 public class Clothes {
-        // Class fields
+    
+    // Class fields
     private int ID;
     private String type;
     private double size;
-    //private BufferedImage image;
     private Clothes next; 
 
     // Constructor
@@ -19,11 +19,10 @@ public class Clothes {
         this.type = type;
         this.size = size;
         this.next = null;
-        //this.image = image;
     }
     
     
-        // Getter and setter methods
+    // Getter and setter methods
 
     public int getID() {
         return ID;
@@ -48,14 +47,6 @@ public class Clothes {
     public void setSize(double size) {
         this.size = size;
     }
-
-//    public BufferedImage getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(BufferedImage image) {
-//        this.image = image;
-//    }
 
     public Clothes getNext() {
         return next;

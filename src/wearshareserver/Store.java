@@ -2,10 +2,11 @@ package wearshareserver;
 
 public class Store extends Entity{
 
- // Class fields
+    // Class fields
     private String promotions;
     private String code;
-
+    
+    
     // Constructor
     public Store(){
         this(1, "Store", "1Store", "X", "0000000000", "50", "Store");

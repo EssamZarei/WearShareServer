@@ -1,8 +1,8 @@
 package wearshareserver;
 
 public class Donor extends Entity {
+    
     // Class fields
-
     private int rewards;
 
     // Constructor
