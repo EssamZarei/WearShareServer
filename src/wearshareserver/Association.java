@@ -5,4 +5,9 @@ public class Association {
     
     private String name;
     private String hashpass;
+    
+    public Association (){
+        
+    }
+    
 }
