@@ -11,6 +11,7 @@ public class WearShareClient {
         
         Association a = new Association();
         System.out.println("hhhh");
+        System.out.println("Now I thing GitHub work correctly");
         
     }
     
