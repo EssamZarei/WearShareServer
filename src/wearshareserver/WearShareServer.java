@@ -12,7 +12,7 @@ public class WearShareServer {
 
         try (ServerSocket sk = new ServerSocket(1818);) {
             System.out.println("Server start listening on Port: " + 1818);
-            
+
             // to handle multi clients
             while (true) {
                 // accept a client
@@ -26,7 +26,6 @@ public class WearShareServer {
         }
     }
 
-    
     public static class multiClientThreaded implements Runnable {
 
         private Socket skClient;
@@ -64,36 +63,91 @@ public class WearShareServer {
 
                 // turn to send
                 int ID;
+                String name;
+                String location;
+                String phone;
                 String password;
+
+                if (logOrCreate == 4) {
+                    //*9
+                    //here has to send for ID
+                    send = "Enter your ID";
+                    outClient.println(send);
+                    //*12
+                    // recv ID
+                    recv = inClient.nextLine();
+                    ID = Integer.parseInt(recv);
+                    //*13
+                    // send msg for request password
+                    send = "Enter your password";
+                    outClient.println(send);
+
+                    //*16
+                    //recv password
+                    recv = inClient.nextLine();
+                    password = recv;
+                    // turn to send MSG
+                    // encrypted pass?
+                    // database check about ID and password
+                    System.out.println("ID: " + ID);
+                    System.out.println("Pass: " + password);
+
+                    // if wrong system.
+                    return;
+                    // I know return is not solution but we focus to make it harder for hackers to try again :)
+                } else {
+                    // here mean have to create account
+                    //*9
+                    send = "Wait Entering ID";
+                    outClient.println(send);
+                    //*12
+                    // recv ID
+                    ID = Integer.parseInt(inClient.nextLine());
+                    System.out.println("ID entered " + ID);
+                    //*13
+                    // send waiting name
+                    send = "Wait Entering Name";
+                    outClient.println(send);
+                    //*16
+                    // recv name
+                    name = inClient.nextLine();
+                    System.out.println("name entered " + name);
+                    //*17
+                    // send waiting password
+                    send = "Wait Entering Password";
+                    outClient.println(send);
+                    //*20
+                    //recv password
+                    password = inClient.nextLine();
+                    System.out.println("password entered");
+                    //*21
+                    // send waiting for location
+                    send = "Wait Entering Location";
+                    outClient.println(send);
+                    //*24
+                    //recv location
+                    location = inClient.nextLine();
+                    System.out.println("lpcation entered " + location);
+                    //*25
+                    // MSG waiting Phone Number
+                    send = "Wait Entering Phone Number";
+                    outClient.println(send);
+                    //*28
+                    // recv phone number
+                    phone = inClient.nextLine();
+
+                    System.out.println("                int ID = " + ID + ";");
+                    System.out.println("                String name = \"" + name + "\";");
+                    System.out.println("                String location = \"" + location + "\";");
+                    System.out.println("                String phone = \"" + phone + "\";");
+                    System.out.println("                String password = \"" + password + "\";");
+
+                }
+
                 // for Donor
                 if (typeOfClient == 1) {
                     // log in
                     if (logOrCreate == 4) {
-                        //*9
-                        //here has to send for ID
-                        send = "Enter your ID";
-                        outClient.println(send);
-
-                        //*12
-                        // recv ID
-                        recv = inClient.nextLine();
-                        ID = Integer.parseInt(recv);
-
-                        //*13
-                        // send msg for request password
-                        send = "Enter your password";
-                        outClient.println(send);
-
-                        //*16
-                        //recv password
-                        recv = inClient.nextLine();
-                        password = recv;
-
-                        // turn to send MSG
-                        // encrypted pass?
-                        // database check about ID and password
-                        System.out.println("ID: " + ID);
-                        System.out.println("Pass: " + password);
 
                     } //create account
                     else {
@@ -261,4 +315,4 @@ public class WearShareServer {
 
 
 
-*/
+ */

@@ -64,13 +64,56 @@ public class WearShareClient {
             } 
             // else mean create new account
             else {
-                    int ID = inUser.nextInt();
+                    System.out.println("Enter ID");
+                    int ID = Integer.parseInt(inUser.nextLine());
+                    System.out.println("Enter name");
                     String name = inUser.nextLine();
+                    System.out.println("Enter password");
                     String password = inUser.nextLine();
+                    System.out.println("Enter location");
                     String location = inUser.nextLine();
+                    System.out.println("Enter phoneNumber");
                     String phoneNumber = inUser.nextLine();
                     
                 if (typeOfUser == 1 || typeOfUser == 2) {
+                    //*10
+                    // recieving MSG
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*11
+                    // send int ID
+                    outServer.println(ID);
+                    //*14
+                    //MSG of entring Name
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*15
+                    // sending name
+                    outServer.println(name);
+                    //*18
+                    // recv MSG waiting pass
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*19
+                    // send password
+                    outServer.println(password);
+                    //*22
+                    // recv MSG waiting location
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*23
+                    // send location
+                    outServer.println(location);
+                    //*26
+                    //recv MSG waiting phone number
+                    recv = inServer.nextLine();
+                    //*27
+                    //send pgone number
+                    outServer.println(phoneNumber);
+                    
+                    System.out.println("New Account Created");
+                    
+                    
                     // here have to ask every time and send the value NOTE SUTE WHAT TURN
                 } else if (typeOfUser == 3) {
                     // here have to ask every time and send the value NOTE SUTE WHAT TURN
