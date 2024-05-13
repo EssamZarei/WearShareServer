@@ -11,7 +11,7 @@ public class WearShareClient {
 
         System.out.println("I am client side");
 
-        try (Socket server = new Socket("127.0.0.1", 8189);
+        try (Socket server = new Socket("127.0.0.1", 1818);
                 Scanner inServer = new Scanner(server.getInputStream());
                 PrintWriter outServer = new PrintWriter(server.getOutputStream(), true);
                 Scanner inUser = new Scanner(System.in);) {

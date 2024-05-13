@@ -10,11 +10,14 @@ public class WearShareServer {
 
         System.out.println("I am Server side");
 
-        try (ServerSocket sk = new ServerSocket(8189);) {
-            System.out.println("Server start listening on Port: " + 8189);
+        try (ServerSocket sk = new ServerSocket(1818);) {
+            System.out.println("Server start listening on Port: " + 1818);
             
+            // to handle multi clients
             while (true) {
+                // accept a client
                 Socket clientSocket = sk.accept();
+                // make a Thread to handle the client
                 new Thread(new multiClientThreaded(clientSocket)).start();
             }
 
@@ -39,57 +42,81 @@ public class WearShareServer {
                     PrintWriter outClient = new PrintWriter(skClient.getOutputStream(), true);
                     Scanner inUser = new Scanner(System.in);) {
 
+                //*1
                 String welcomeMSG = "Welcome to our WearShare system, the latest version of donation clothes !! Enter 1 for Donor Enter 2 for Association Enter 3 for Store";
                 outClient.println(welcomeMSG);
 
-                while (true) {
-                    String recv = inClient.nextLine();
-                    int typeOfClient = Integer.parseInt(recv);
-                    System.out.println("Client: " + recv);
+                //*4
+                // take 1 or 2 or 3 from client and show it
+                String recv = inClient.nextLine();
+                int typeOfClient = Integer.parseInt(recv);
+                System.out.println("Client: " + recv);
 
-                    String send = "Enter 4 for log in or 5 for create account";
-                    outClient.println(send);
+                //*5
+                // send msg of 4 5
+                String send = "Enter 4 for log in or 5 for create account";
+                outClient.println(send);
 
-                    recv = inClient.nextLine();
-                    int logOrCreate = Integer.parseInt(recv);
-                    System.out.println("Client: " + recv);
+                //*8 recv from clint if 4 or 5
+                recv = inClient.nextLine();
+                int logOrCreate = Integer.parseInt(recv);
+                System.out.println("Client: " + recv);
 
-                    int ID;
-                    String password;
-                    if (typeOfClient == 1) {
-                        if (logOrCreate == 4) {
-                            send = "Enter your ID";
-                            outClient.println(send);
+                // turn to send
+                int ID;
+                String password;
+                // for Donor
+                if (typeOfClient == 1) {
+                    // log in
+                    if (logOrCreate == 4) {
+                        //*9
+                        //here has to send for ID
+                        send = "Enter your ID";
+                        outClient.println(send);
 
-                            recv = inClient.nextLine();
-                            ID = Integer.parseInt(recv);
+                        //*12
+                        // recv ID
+                        recv = inClient.nextLine();
+                        ID = Integer.parseInt(recv);
 
-                            send = "Enter your password";
-                            outClient.println(send);
+                        //*13
+                        // send msg for request password
+                        send = "Enter your password";
+                        outClient.println(send);
 
-                            recv = inClient.nextLine();
-                            password = recv;
+                        //*16
+                        //recv password
+                        recv = inClient.nextLine();
+                        password = recv;
 
-                            System.out.println("ID: " + ID);
-                            System.out.println("Pass: " + password);
+                        // turn to send MSG
+                        // encrypted pass?
+                        // database check about ID and password
+                        System.out.println("ID: " + ID);
+                        System.out.println("Pass: " + password);
 
-                        } else {
+                    } //create account
+                    else {
 
-                        }
-                    } else if (typeOfClient == 2) {
-                        if (logOrCreate == 4) {
-
-                        } else {
-
-                        }
-                    } else if (typeOfClient == 3) {
-                        if (logOrCreate == 4) {
-
-                        } else {
-
-                        }
                     }
-                break;
+                } // for Association
+                else if (typeOfClient == 2) {
+                    // log in
+                    if (logOrCreate == 4) {
+
+                    } //create account
+                    else {
+
+                    }
+                } // for Store
+                else if (typeOfClient == 3) {
+                    // log in
+                    if (logOrCreate == 4) {
+
+                    } //create account
+                    else {
+
+                    }
                 }
 
             } catch (IOException ex) {
