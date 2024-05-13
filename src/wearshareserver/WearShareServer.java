@@ -10,6 +10,106 @@ public class WearShareServer {
 
         System.out.println("I am Server side");
 
+        try (ServerSocket sk = new ServerSocket(8189);) {
+            System.out.println("Server start listening on Port: " + 8189);
+            
+            while (true) {
+                Socket clientSocket = sk.accept();
+                new Thread(new multiClientThreaded(clientSocket)).start();
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    
+    public static class multiClientThreaded implements Runnable {
+
+        private Socket skClient;
+
+        public multiClientThreaded(Socket skClient) {
+            this.skClient = skClient;
+        }
+
+        @Override
+        public void run() {
+
+            try (Scanner inClient = new Scanner(skClient.getInputStream());
+                    PrintWriter outClient = new PrintWriter(skClient.getOutputStream(), true);
+                    Scanner inUser = new Scanner(System.in);) {
+
+                String welcomeMSG = "Welcome to our WearShare system, the latest version of donation clothes !! Enter 1 for Donor Enter 2 for Association Enter 3 for Store";
+                outClient.println(welcomeMSG);
+
+                while (true) {
+                    String recv = inClient.nextLine();
+                    int typeOfClient = Integer.parseInt(recv);
+                    System.out.println("Client: " + recv);
+
+                    String send = "Enter 4 for log in or 5 for create account";
+                    outClient.println(send);
+
+                    recv = inClient.nextLine();
+                    int logOrCreate = Integer.parseInt(recv);
+                    System.out.println("Client: " + recv);
+
+                    int ID;
+                    String password;
+                    if (typeOfClient == 1) {
+                        if (logOrCreate == 4) {
+                            send = "Enter your ID";
+                            outClient.println(send);
+
+                            recv = inClient.nextLine();
+                            ID = Integer.parseInt(recv);
+
+                            send = "Enter your password";
+                            outClient.println(send);
+
+                            recv = inClient.nextLine();
+                            password = recv;
+
+                            System.out.println("ID: " + ID);
+                            System.out.println("Pass: " + password);
+
+                        } else {
+
+                        }
+                    } else if (typeOfClient == 2) {
+                        if (logOrCreate == 4) {
+
+                        } else {
+
+                        }
+                    } else if (typeOfClient == 3) {
+                        if (logOrCreate == 4) {
+
+                        } else {
+
+                        }
+                    }
+                break;
+                }
+
+            } catch (IOException ex) {
+                System.err.println("ERROR FROM MULTI CLIENT THREADED");
+            }
+
+        }
+    }
+}
+
+
+/*
+
+
+public class WearShareServer {
+
+    public static void main(String[] args) {
+
+        System.out.println("I am Server side");
+
         try (ServerSocket sk = new ServerSocket(8189);
              Socket incoming = sk.accept();
              Scanner inClient = new Scanner(incoming.getInputStream());
@@ -72,8 +172,6 @@ public class WearShareServer {
                     
                     System.out.println("ID: " + ID);
                     System.out.println("Pass: " + password);
-
-                    
                     
                 }
                 //create account
@@ -114,4 +212,26 @@ public class WearShareServer {
             ex.printStackTrace();
         }
     }
+    
+    public class multiClientThreaded implements Runnable{
+    
+        private Socket skClient;
+        
+        public multiClientThreaded(Socket skclient){
+            this.skClient = skClient;
+        }
+        
+        public void run(){
+            
+            
+            
+        }
 }
+    
+}
+
+
+
+
+
+*/
