@@ -93,9 +93,11 @@ public class WearShareServer {
                     System.out.println("Pass: " + password);
 
                     // if wrong system.
-                    return;
+                    //return;
                     // I know return is not solution but we focus to make it harder for hackers to try again :)
-                } else {
+                } 
+                // create new account
+                else {
                     // here mean have to create account
                     //*9
                     send = "Wait Entering ID ...";
@@ -150,9 +152,51 @@ public class WearShareServer {
                 
                 // reaching this line mean the user log in or creates his account
                 // user now want to do his actions
+                //     ---     ---     Part OF Users Oprations     ---     ---
                 // for Donor
                 if (typeOfClient == 1) {
-
+                    
+                    //*29
+                    //send MSG of Donor actions
+                    send = "Hi Donor, Wnter 1 for clothes donation OR 2 for exchange your points";
+                    outClient.println(send);
+                    
+                    //*32
+                    //recv action number
+                    String donorAction = inClient.nextLine();
+                    
+                    if(donorAction.equals("1")){
+                        // donate clothes
+                        //*33
+                        //send MSG waiting clothes type
+                        send = "Wait Entering clothes type ...";
+                        outClient.println(send);
+                        //*36
+                        //recv clothes type
+                        recv = inClient.nextLine();
+                        String clothingType = recv;
+                        //*37
+                        // send MSG waiting clothes size
+                        send = "Wait Entering clothes size ...";
+                        outClient.println(send);
+                        //*40
+                        // recv MSG of clothes size
+                        recv = inClient.nextLine();
+                        int clothingSize = Integer.parseInt(recv);
+                        
+                        //here done of donating ation
+                        // must send to database information of clothes and user
+                        // based on City of the Donor will assign the association
+                        
+                        
+                    }else{
+                        // exchange points
+                        // give points from database according to ID
+                        String points = "0";
+                        
+                        
+                        
+                    }
                     
                     
                 } // for Association
@@ -162,13 +206,9 @@ public class WearShareServer {
                     
                 } // for Store
                 else if (typeOfClient == 3) {
-                    // log in
-                    if (logOrCreate == 4) {
-
-                    } //create account
-                    else {
-
-                    }
+                    
+                    
+                    
                 }
 
             } catch (IOException ex) {
