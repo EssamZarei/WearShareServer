@@ -28,7 +28,7 @@ public class WearShareClient {
             phoneNumber = ID + "";
         }
         //System.out.println("IDDDDD " + ID);
-        
+
         try (Socket server = new Socket("127.0.0.1", 1818);
                 Scanner inServer = new Scanner(server.getInputStream());
                 PrintWriter outServer = new PrintWriter(server.getOutputStream(), true);) {
@@ -116,9 +116,9 @@ public class WearShareClient {
                 System.out.println("New Account Created");
 
             } // End of else of create account
-            
+
             // for Donor operations
-            if(typeOfUser == 1){
+            if (typeOfUser == 1) {
                 //*30
                 //recv MSG of donate clothes OR exchange points
                 recv = inServer.nextLine();
@@ -129,8 +129,8 @@ public class WearShareClient {
                 //send action number
                 send = donorAction + "";
                 outServer.println(send);
-                
-                if(donorAction == 1){
+
+                if (donorAction == 1) {
                     // will enter clothes information
                     String clothingType = validateClothingType(inUser);
                     int clothingSize = validateClothingSize(inUser);
@@ -149,27 +149,49 @@ public class WearShareClient {
                     //send clothes size
                     send = clothingSize + "";
                     outServer.println(send);
-                    
-                    
-                }else{
+
+                } else {
                     // eill exchange points
                 }
-                
+
+            } // for Association operations
+            else if (typeOfUser == 2) {
+
+            } // for stores operations
+            else if (typeOfUser == 3) {
+                //*42
+                //recv MSG of edit promotion or add promotion code
+                recv = inServer.nextLine();
+                System.out.println("server: " + recv);
+                int storeAction = validateStoreAction(inUser);
+                System.out.println("Store action: " + (storeAction == 1 ? "Edit promotion" : "Add promotion code"));
+                //*43
+                //send action number
+                send = storeAction + "";
+                outServer.println(send);
+
+                if (storeAction == 1) {
+                    //*46
+                    //recv MSG of waiting promotion
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*47
+                    //send promotion
+                    String promotion = validatePromotion(inUser);
+                    outServer.println(promotion);
+
+                } else {
+                    //*50
+                    //recv MSG of waiting promotion code
+                    recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
+                    //*51
+                    //send promotion code
+                    String promotionCode = validatePromotionCode(inUser);
+                    outServer.println(promotionCode);
+                }
             }
-            // for Association operations
-            else if(typeOfUser == 3){
-                
-                
-                
-            }
-            // for stores operations
-            else if(typeOfUser == 3){
-                
-                
-                
-            }
-            
-            
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -269,61 +291,93 @@ public class WearShareClient {
             }
         }
     }
-    
-    
+
     //   ---   ---   Validations OF Actions   ---   ---
-    
-    
+    //   ---   ---   Validations Donor   ---   ---
     public static int validateDonorAction(Scanner scanner) {
-    while (true) {
-        System.out.println("If you want to donate clothes, press 1. If you want to exchange points, enter 2:");
-        String input = scanner.nextLine();
-        if (input.equals("1") || input.equals("2")) {
-            return Integer.parseInt(input);
-        } else {
-            System.out.println("Invalid choice. Please enter 1 or 2.");
-        }
-    }
-}
-    
-    
-public static String validateClothingType(Scanner scanner) {
-    while (true) {
-        System.out.println("Enter clothing type (1 for Men, 2 for Women, 3 for Men Child, 4 for Women Child):");
-        String input = scanner.nextLine();
-        switch (input) {
-            case "1":
-                return "Men";
-            case "2":
-                return "Women";
-            case "3":
-                return "Men Child";
-            case "4":
-                return "Women Child";
-            default:
-                System.out.println("Invalid choice. Please enter 1, 2, 3, or 4.");
-        }
-    }
-}
-
-
-    
-    public static int validateClothingSize(Scanner scanner) {
-    while (true) {
-        System.out.println("Enter clothing size (integer between 1 and 60):");
-        String input = scanner.nextLine();
-        try {
-            int size = Integer.parseInt(input);
-            if (size >= 1 && size <= 60) {
-                return size;
+        while (true) {
+            System.out.println("If you want to donate clothes, press 1. If you want to exchange points, enter 2:");
+            String input = scanner.nextLine();
+            if (input.equals("1") || input.equals("2")) {
+                return Integer.parseInt(input);
             } else {
-                System.out.println("Invalid size. Size must be an integer between 1 and 60.");
+                System.out.println("Invalid choice. Please enter 1 or 2.");
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
         }
     }
-}
 
+    public static String validateClothingType(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter clothing type (1 for Men, 2 for Women, 3 for Men Child, 4 for Women Child):");
+            String input = scanner.nextLine();
+            switch (input) {
+                case "1":
+                    return "Men";
+                case "2":
+                    return "Women";
+                case "3":
+                    return "Men Child";
+                case "4":
+                    return "Women Child";
+                default:
+                    System.out.println("Invalid choice. Please enter 1, 2, 3, or 4.");
+            }
+        }
+    }
+    
+    //   ---   ---   Validations Clothes   ---   ---
+    public static int validateClothingSize(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter clothing size (integer between 1 and 60):");
+            String input = scanner.nextLine();
+            try {
+                int size = Integer.parseInt(input);
+                if (size >= 1 && size <= 60) {
+                    return size;
+                } else {
+                    System.out.println("Invalid size. Size must be an integer between 1 and 60.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
+    }
 
+    public static int validateStoreAction(Scanner scanner) {
+        while (true) {
+            System.out.println("If you want to edit a promotion, press 1. If you want to add a promotion code, press 2:");
+            String input = scanner.nextLine();
+            if (input.equals("1") || input.equals("2")) {
+                return Integer.parseInt(input);
+            } else {
+                System.out.println("Invalid choice. Please enter 1 or 2.");
+            }
+        }
+    }
+    
+    //   ---   ---   Validations Store   ---   ---
+
+    public static String validatePromotion(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter the promotion details:");
+            String input = scanner.nextLine();
+            if (!input.trim().isEmpty()) {
+                return input;
+            } else {
+                System.out.println("Invalid promotion. Promotion details cannot be empty.");
+            }
+        }
+    }
+
+    public static String validatePromotionCode(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter the promotion code:");
+            String input = scanner.nextLine();
+            if (input.matches("\\w+")) {
+                return input;
+            } else {
+                System.out.println("Invalid promotion code. Code must contain only alphanumeric characters.");
+            }
+        }
+    }
 }
