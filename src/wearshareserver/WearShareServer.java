@@ -75,7 +75,7 @@ public class WearShareServer {
                 // turn to send
                 int ID;
                 String name;
-                String location;
+                String location = "";
                 String phone;
                 String password;
 
@@ -159,12 +159,6 @@ public class WearShareServer {
 
                     System.out.println("Account created: ID = " + ID + ", Name = " + name + ", Location = " + location + ", Phone = " + phone + ", Password = You want to see my pass hhhhhh");
 
-                    System.out.println("                int ID = " + ID + ";");
-                    System.out.println("                String name = \"" + name + "\";");
-                    System.out.println("                String location = \"" + location + "\";");
-                    System.out.println("                String phone = \"" + phone + "\";");
-                    System.out.println("                String password = \"" + password + "\";");
-
                 }
 
                 // reaching this line mean the user log in or creates his account
@@ -201,6 +195,19 @@ public class WearShareServer {
                         recv = inClient.nextLine();
                         int clothingSize = Integer.parseInt(recv);
 
+                        int clothesID = getNextClothesID(conn);
+                        
+
+                        int associationID = associationInLocation(conn, location);
+                        if (associationID != -1) {
+                            insertClothes(conn, clothesID, clothingSize, clothingType);
+                            insertDonorAssociationClothes(conn, ID, associationID, clothesID);
+                            send = "Clothes donated successfully!";
+                            outClient.println(send);
+                        } else {
+                            send = "!Sorry, there is no Association in your location";
+                            outClient.println(send);
+                        }
                         //here done of donating ation
                         // must send to database information of clothes and user
                         // based on City of the Donor will assign the association
@@ -266,10 +273,6 @@ public class WearShareServer {
         }
     }
 
-    public static void p() {
-        System.out.println("usssee from run");
-    }
-
     public static boolean isValidUser(Connection conn, int ID, String password, int typeOfClient) throws SQLException {
         String tableName = getTableName(typeOfClient);
 
@@ -319,4 +322,59 @@ public class WearShareServer {
         }
         return "Store";
     }
+
+    public static int associationInLocation(Connection conn, String location) throws SQLException {
+        String query = "SELECT id FROM Association WHERE location = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, location);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                } else {
+                    return -1; // No association found
+                }
+            }
+        }
+    }
+
+    public static int getNextClothesID(Connection conn) throws SQLException {
+        String query = "SELECT MAX(id) AS max_id FROM Clothes";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next() && rs.getObject("max_id") != null) {
+                return rs.getInt("max_id") + 1;
+            } else {
+                return 500000001; // Starting ID for the first item
+            }
+        }
+    }
+
+    public static void insertClothes(Connection conn, int clothesID, int size, String type) throws SQLException {
+        String query = "INSERT INTO Clothes (id, size, type) VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, clothesID);
+            stmt.setInt(2, size);
+            stmt.setString(3, type);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void insertDonorAssociationClothes(Connection conn, int donorID, int associationID, int clothesID) throws SQLException {
+        String query = "INSERT INTO Donor_Association_Clothes (donor_id, association_id, clothes_id) VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, donorID);
+            stmt.setInt(2, associationID);
+            stmt.setInt(3, clothesID);
+
+            stmt.executeUpdate();
+        }
+    }
+
 }
