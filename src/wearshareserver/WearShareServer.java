@@ -42,7 +42,7 @@ public class WearShareServer {
                     Scanner inUser = new Scanner(System.in);) {
 
                 //*1
-                String welcomeMSG = "Welcome to our WearShare system, the latest version of donation clothes !! Enter 1 for Donor Enter 2 for Association Enter 3 for Store";
+                String welcomeMSG = "Welcome to our WearShare system, the latest version of donation clothes !! Im recieving you type of user please wait ...";
                 outClient.println(welcomeMSG);
 
                 //*4
@@ -53,7 +53,7 @@ public class WearShareServer {
 
                 //*5
                 // send msg of 4 5
-                String send = "Enter 4 for log in or 5 for create account";
+                String send = "Wait sending log in or create an account ...";
                 outClient.println(send);
 
                 //*8 recv from clint if 4 or 5
@@ -71,7 +71,7 @@ public class WearShareServer {
                 if (logOrCreate == 4) {
                     //*9
                     //here has to send for ID
-                    send = "Enter your ID";
+                    send = "Wait Entering ID ...";
                     outClient.println(send);
                     //*12
                     // recv ID
@@ -79,7 +79,7 @@ public class WearShareServer {
                     ID = Integer.parseInt(recv);
                     //*13
                     // send msg for request password
-                    send = "Enter your password";
+                    send = "Wait Entering Password ...";
                     outClient.println(send);
 
                     //*16
@@ -98,7 +98,7 @@ public class WearShareServer {
                 } else {
                     // here mean have to create account
                     //*9
-                    send = "Wait Entering ID";
+                    send = "Wait Entering ID ...";
                     outClient.println(send);
                     //*12
                     // recv ID
@@ -106,7 +106,7 @@ public class WearShareServer {
                     System.out.println("ID entered " + ID);
                     //*13
                     // send waiting name
-                    send = "Wait Entering Name";
+                    send = "Wait Entering Name ...";
                     outClient.println(send);
                     //*16
                     // recv name
@@ -114,7 +114,7 @@ public class WearShareServer {
                     System.out.println("name entered " + name);
                     //*17
                     // send waiting password
-                    send = "Wait Entering Password";
+                    send = "Wait Entering Password ...";
                     outClient.println(send);
                     //*20
                     //recv password
@@ -122,7 +122,7 @@ public class WearShareServer {
                     System.out.println("password entered");
                     //*21
                     // send waiting for location
-                    send = "Wait Entering Location";
+                    send = "Wait Entering Location ...";
                     outClient.println(send);
                     //*24
                     //recv location
@@ -130,7 +130,7 @@ public class WearShareServer {
                     System.out.println("lpcation entered " + location);
                     //*25
                     // MSG waiting Phone Number
-                    send = "Wait Entering Phone Number";
+                    send = "Wait Entering Phone Number ...";
                     outClient.println(send);
                     //*28
                     // recv phone number
@@ -144,24 +144,22 @@ public class WearShareServer {
 
                 }
 
+                
+                
+                
+                
+                // reaching this line mean the user log in or creates his account
+                // user now want to do his actions
                 // for Donor
                 if (typeOfClient == 1) {
-                    // log in
-                    if (logOrCreate == 4) {
 
-                    } //create account
-                    else {
-
-                    }
+                    
+                    
                 } // for Association
                 else if (typeOfClient == 2) {
-                    // log in
-                    if (logOrCreate == 4) {
-
-                    } //create account
-                    else {
-
-                    }
+                    
+                    
+                    
                 } // for Store
                 else if (typeOfClient == 3) {
                     // log in

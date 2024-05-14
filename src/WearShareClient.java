@@ -8,15 +8,35 @@ import java.util.*;
 public class WearShareClient {
 
     public static void main(String[] args) {
-
+        Scanner inUser = new Scanner(System.in);
         System.out.println("I am client side");
 
+        int typeOfUser = validateUserType(inUser);
+        int logOrCreate = validateChoice(inUser);
+        int ID = 0;
+        String name = "";
+        String password = "";
+        String location = "";
+        String phoneNumber = "";
+
+        if (logOrCreate == 4) {
+            login(inUser);
+        } else if (logOrCreate == 5) {
+            ID = validateID(inUser);
+            name = validateName(inUser);
+            password = validatePassword(inUser);
+            location = validateLocation(inUser);
+            phoneNumber = ID + "";
+        }
+        
+        
+        
+        
+        
         try (Socket server = new Socket("127.0.0.1", 1818);
                 Scanner inServer = new Scanner(server.getInputStream());
-                PrintWriter outServer = new PrintWriter(server.getOutputStream(), true);
-                Scanner inUser = new Scanner(System.in);) {
+                PrintWriter outServer = new PrintWriter(server.getOutputStream(), true);) {
 
-            
             //*2
             // Read welcome message from server
             String welcomeMessage = inServer.nextLine();
@@ -24,8 +44,7 @@ public class WearShareClient {
 
             //*3
             // to send 1 2 3
-            String send = inUser.nextLine();
-            int typeOfUser = Integer.parseInt(send);
+            String send = typeOfUser + "";
             outServer.println(send);
 
             //*6
@@ -35,8 +54,7 @@ public class WearShareClient {
 
             //*7
             // send 4 or 5 for log in or create account
-            send = inUser.nextLine();
-            int logOrCreate = Integer.parseInt(send);
+            send = logOrCreate + "";
             outServer.println(send);
 
             //
@@ -49,7 +67,7 @@ public class WearShareClient {
 
                 //*11
                 //send ID to server
-                send = inUser.nextLine();
+                send = ID + "";
                 outServer.println(send);
 
                 //*14
@@ -59,22 +77,11 @@ public class WearShareClient {
 
                 //*15
                 // send password to server
-                send = inUser.nextLine();
+                send = password;
                 outServer.println(send);
-            } 
-            // else mean create new account
+            } // else mean create new account
             else {
-                    System.out.println("Enter ID");
-                    int ID = Integer.parseInt(inUser.nextLine());
-                    System.out.println("Enter name");
-                    String name = inUser.nextLine();
-                    System.out.println("Enter password");
-                    String password = inUser.nextLine();
-                    System.out.println("Enter location");
-                    String location = inUser.nextLine();
-                    System.out.println("Enter phoneNumber");
-                    String phoneNumber = inUser.nextLine();
-                    
+
                 if (typeOfUser == 1 || typeOfUser == 2) {
                     //*10
                     // recieving MSG
@@ -107,13 +114,13 @@ public class WearShareClient {
                     //*26
                     //recv MSG waiting phone number
                     recv = inServer.nextLine();
+                    System.out.println("server: " + recv);
                     //*27
                     //send pgone number
                     outServer.println(phoneNumber);
-                    
+
                     System.out.println("New Account Created");
-                    
-                    
+
                     // here have to ask every time and send the value NOTE SUTE WHAT TURN
                 } else if (typeOfUser == 3) {
                     // here have to ask every time and send the value NOTE SUTE WHAT TURN
@@ -126,4 +133,100 @@ public class WearShareClient {
             ex.printStackTrace();
         }
     }
+    
+     public static int validateUserType(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter user type (1 for Donor, 2 for Association, 3 for Store):");
+            String input = scanner.nextLine();
+            if (input.equals("1") || input.equals("2") || input.equals("3")) {
+                return Integer.parseInt(input);
+            } else {
+                System.out.println("Invalid user type. Please enter 1, 2, or 3.");
+            }
+        }
+    }
+     
+    public static int validateChoice(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter 4 to login or 5 to create an account:");
+            String input = scanner.nextLine();
+            if (input.equals("5") || input.equals("4")) {
+                return Integer.parseInt(input);
+            } else {
+                System.out.println("Invalid choice. Please enter 4 or 5.");
+            }
+        }
+    }
+
+        public static void login(Scanner scanner) {
+        int ID = validateID(scanner);
+        String password = validatePassword(scanner);
+
+        System.out.println("Login successful!");
+        System.out.println("ID: " + ID);
+        System.out.println("Password: " + password);
+    }
+    
+        public static int validateID(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter ID:");
+            String input = scanner.nextLine();
+            if (input.matches("\\d{9}") && input.charAt(0) == '5') {
+                return Integer.parseInt(input);
+            } else {
+                System.out.println("Invalid ID. ID must be a 9-digit number AND start with 5.");
+            }
+        }
+    }
+
+    public static String validateName(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter name:");
+            String input = scanner.nextLine();
+            if (input.matches("[a-zA-Z]+")) {
+                return input;
+            } else {
+                System.out.println("Invalid name. Name must contain only characters.");
+            }
+        }
+    }
+
+    public static String validatePassword(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter password:");
+            String input = scanner.nextLine();
+            if (input.length() >= 8) {
+                return input;
+            } else {
+                System.out.println("Invalid password. Password must contain at least 8 characters.");
+            }
+        }
+    }
+
+    public static String validateLocation(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter location (city name):");
+            String input = scanner.nextLine().toLowerCase();
+            System.out.println("You entered: " + input + ". Is this correct? (yes/no)");
+            String confirmation = scanner.nextLine().toLowerCase();
+            if (confirmation.equals("yes")) {
+                return input;
+            } else {
+                System.out.println("Let's try again.");
+            }
+        }
+    }
+
+    public static String validatePhoneNumber(Scanner scanner) {
+        while (true) {
+            System.out.println("Enter phone number:");
+            String input = scanner.nextLine();
+            if (input.matches("\\d+")) {
+                return input;
+            } else {
+                System.out.println("Invalid phone number. Phone number must contain only digits.");
+            }
+        }
+    }
+    
 }
