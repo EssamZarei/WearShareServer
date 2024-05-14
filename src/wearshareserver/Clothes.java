@@ -56,4 +56,5 @@ public class Clothes {
         this.next = next;
     }
     
+    static String w = "whysqlserver?11112";
 }

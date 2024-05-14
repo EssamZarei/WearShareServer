@@ -23,11 +23,12 @@ public class WearShareClient {
             ID = validateID(inUser);
             password = validatePassword(inUser);
         } else if (logOrCreate == 5) {
+            ID = validateID(inUser);
             name = validateName(inUser);
+            password = validatePassword(inUser);
             location = validateLocation(inUser);
             phoneNumber = ID + "";
         }
-        //System.out.println("IDDDDD " + ID);
 
         try (Socket server = new Socket("127.0.0.1", 1818);
                 Scanner inServer = new Scanner(server.getInputStream());
@@ -122,6 +123,11 @@ public class WearShareClient {
                 //*30
                 //recv MSG of donate clothes OR exchange points
                 recv = inServer.nextLine();
+                if(recv.charAt(0) == '!'){
+                    System.out.println(recv);
+                    return;
+                }
+                
                 System.out.println("server: " + recv);
                 int donorAction = validateDonorAction(inUser);
                 System.out.println("Donor action: " + (donorAction == 1 ? "Donate clothes" : "Exchange points"));
@@ -164,7 +170,7 @@ public class WearShareClient {
                 recv = inServer.nextLine();
                 System.out.println("server: " + recv);
                 int storeAction = validateStoreAction(inUser);
-                System.out.println("Store action: " + (storeAction == 1 ? "Edit promotion" : "Add promotion code"));
+                System.out.println("Store action: " + (storeAction == 1 ? "Edit promotion" : "Add code"));
                 //*43
                 //send action number
                 send = storeAction + "";
@@ -177,7 +183,7 @@ public class WearShareClient {
                     System.out.println("server: " + recv);
                     //*47
                     //send promotion
-                    String promotion = validatePromotion(inUser);
+                    int promotion = validatePromotion(inUser);
                     outServer.println(promotion);
 
                 } else {
@@ -279,7 +285,7 @@ public class WearShareClient {
             }
         }
     }
-
+    
     public static String validatePhoneNumber(Scanner scanner) {
         while (true) {
             System.out.println("Enter phone number:");
@@ -305,7 +311,6 @@ public class WearShareClient {
             }
         }
     }
-
     public static String validateClothingType(Scanner scanner) {
         while (true) {
             System.out.println("Enter clothing type (1 for Men, 2 for Women, 3 for Men Child, 4 for Women Child):");
@@ -324,7 +329,6 @@ public class WearShareClient {
             }
         }
     }
-    
     //   ---   ---   Validations Clothes   ---   ---
     public static int validateClothingSize(Scanner scanner) {
         while (true) {
@@ -354,17 +358,17 @@ public class WearShareClient {
             }
         }
     }
-    
     //   ---   ---   Validations Store   ---   ---
-
-    public static String validatePromotion(Scanner scanner) {
+    public static int validatePromotion(Scanner scanner) {
         while (true) {
             System.out.println("Enter the promotion details:");
-            String input = scanner.nextLine();
-            if (!input.trim().isEmpty()) {
-                return input;
-            } else {
-                System.out.println("Invalid promotion. Promotion details cannot be empty.");
+            String input = scanner.nextLine().trim();
+
+            try {
+                int number = Integer.parseInt(input);
+                return number;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid promotion. Please enter a valid integer number.");
             }
         }
     }
