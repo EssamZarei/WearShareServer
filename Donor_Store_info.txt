@@ -1,0 +1,36 @@
+Donor Details:
+id: 512345678
+name: essam
+password: 512345678
+phone_number: 512345678
+location: jed
+rewards: 820
+
+Store Details:
+id: 534567890
+name: YourBestStore
+password: 534567890
+phone_number: 534567890
+location: jed
+promotion: 50
+codes: BeKind
+
+
+Donor Details:
+id: 512345678
+name: essam
+password: 512345678
+phone_number: 512345678
+location: jed
+rewards: 820
+
+Store Details:
+id: 534567890
+name: YourBestStore
+password: 534567890
+phone_number: 534567890
+location: jed
+promotion: 50
+codes: BeKind
+
+

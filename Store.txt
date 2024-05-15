@@ -6,3 +6,11 @@ location: 512345678
 promotion: 50
 codes: null
 
+id: 534567890
+name: YourBestStore
+password: 534567890
+phone_number: 534567890
+location: jed
+promotion: 50
+codes: BeKind
+

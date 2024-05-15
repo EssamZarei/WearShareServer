@@ -14,3 +14,19 @@ id: 500000004
 size: 22
 type: Men
 
+id: 500000005
+size: 15
+type: Men
+
+id: 500000006
+size: 22
+type: Men
+
+id: 500000007
+size: 30
+type: Women
+
+id: 500000008
+size: 8
+type: Men Child
+

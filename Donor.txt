@@ -9,13 +9,20 @@ id: 512345678
 name: essam
 password: 512345678
 phone_number: 512345678
-location: j
-rewards: null
+location: jed
+rewards: 820
 
 id: 518181815
 name: EssamZarei
 password: 518181815
 phone_number: 518181815
+location: jed
+rewards: 0
+
+id: 535390390
+name: EAZ
+password: 535390390
+phone_number: 535390390
 location: jed
 rewards: 0
 

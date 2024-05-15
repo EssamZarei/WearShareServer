@@ -1,0 +1,84 @@
+Donor Details:
+id: 512345678
+name: essam
+password: 512345678
+phone_number: 512345678
+location: jed
+rewards: 820
+
+Association Details:
+id: 523456789
+name: AJed
+password: 523456789
+phone_number: 523456789
+location: jed
+
+Clothes Details:
+id: 500000005
+size: 15
+type: Men
+
+
+Donor Details:
+id: 512345678
+name: essam
+password: 512345678
+phone_number: 512345678
+location: jed
+rewards: 820
+
+Association Details:
+id: 523456789
+name: AJed
+password: 523456789
+phone_number: 523456789
+location: jed
+
+Clothes Details:
+id: 500000006
+size: 22
+type: Men
+
+
+Donor Details:
+id: 512345678
+name: essam
+password: 512345678
+phone_number: 512345678
+location: jed
+rewards: 820
+
+Association Details:
+id: 523456789
+name: AJed
+password: 523456789
+phone_number: 523456789
+location: jed
+
+Clothes Details:
+id: 500000007
+size: 30
+type: Women
+
+
+Donor Details:
+id: 535390390
+name: EAZ
+password: 535390390
+phone_number: 535390390
+location: jed
+rewards: 0
+
+Association Details:
+id: 523456789
+name: AJed
+password: 523456789
+phone_number: 523456789
+location: jed
+
+Clothes Details:
+id: 500000008
+size: 8
+type: Men Child
+
+
