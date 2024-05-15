@@ -208,13 +208,14 @@ public class WearShareServer {
                         int clothingSize = Integer.parseInt(recv);
 
                         int clothesID = getNextClothesID(conn);
-                        
+
                         location = getLocation(conn, ID, 1);
                         int associationID = typeInLocation(conn, location, 2);
                         if (associationID != -1) {
                             insertClothes(conn, clothesID, clothingSize, clothingType);
                             insertDonorAssociationClothes(conn, ID, associationID, clothesID);
                             send = "Clothes donated successfully!";
+                            updateDonorRewards(conn, ID, 20);
                             outClient.println(send);
                         } else {
                             send = "!Sorry, there is no Association in your location";
@@ -237,8 +238,11 @@ public class WearShareServer {
                         location = getLocation(conn, ID, 1);
                         int storeID = typeInLocation(conn, location, 3);
                         if (storeID != -1) {
-
-                            send = "Clothes donated successfully!";
+                            String code = getStorePromoCode(conn, storeID);
+                            if (code.charAt(0) != '!') {
+                                updateDonorRewards(conn, ID, -50);
+                            }
+                            send = "Clothes donated successfully! your code : " + code;
                             outClient.println(send);
                         } else {
                             send = "!Sorry, there is no Store in your location";
@@ -276,6 +280,7 @@ public class WearShareServer {
                         //recv promotion
                         recv = inClient.nextLine();
                         int promotion = Integer.parseInt(recv);
+                        updateStorePromotion(conn, ID, promotion);
                         System.out.println("Promotion: " + promotion);
                         // send the updated promotion to database
 
@@ -291,6 +296,7 @@ public class WearShareServer {
                         String promotionCode = recv;
                         System.out.println("Code: " + promotionCode);
                         // update code in database
+                        addStorePromoCode(conn, ID, promotionCode);
                     }
                 }
 
@@ -410,17 +416,7 @@ public class WearShareServer {
         }
     }
 
-    private void incrementDonorRewards(Connection conn, int donorID) throws SQLException {
-        String query = "UPDATE Donor SET rewards = rewards + 20 WHERE id = ?";
-
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, donorID);
-
-            stmt.executeUpdate();
-        }
-    }
-
-    private int getDonorRewards(Connection conn, int donorID) throws SQLException {
+    public static int getDonorRewards(Connection conn, int donorID) throws SQLException {
         String query = "SELECT rewards FROM Donor WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -436,18 +432,20 @@ public class WearShareServer {
         }
     }
 
-    private void updateDonorRewards(Connection conn, int donorID, int newRewards) throws SQLException {
-        String query = "UPDATE Donor SET rewards = ? WHERE id = ?";
+    public static void updateDonorRewards(Connection conn, int donorID, int amountToAdd) throws SQLException {
+        String operator = (amountToAdd >= 0) ? "+" : "-";
+        String query = "UPDATE Donor SET rewards = rewards " + operator + " ? WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, newRewards);
+            stmt.setInt(1, Math.abs(amountToAdd)); // Ensure positive value for amount to add
             stmt.setInt(2, donorID);
 
             stmt.executeUpdate();
         }
     }
 
-    private String getStorePromoCode(Connection conn, int storeID) throws SQLException {
+
+    public static String getStorePromoCode(Connection conn, int storeID) throws SQLException {
         String query = "SELECT codes FROM Store WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -455,15 +453,20 @@ public class WearShareServer {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("codes");
-                } else {
-                    return "";
+                    String isnull = rs.getString("codes");
+                    if (isnull == null) {
+                        return "!SorryNoCodeAvailable";
+                    } else {
+                        return isnull;
+                    }
                 }
             }
         }
+        return "!SorryNoCodeAvailable";
+
     }
 
-    private void updateStorePromotion(Connection conn, int storeID, int promotion) throws SQLException {
+    public static void updateStorePromotion(Connection conn, int storeID, int promotion) throws SQLException {
         // Assume promotion is a new column to be updated
         String query = "UPDATE Store SET promotion = ? WHERE id = ?";
 
@@ -475,7 +478,7 @@ public class WearShareServer {
         }
     }
 
-    private void addStorePromoCode(Connection conn, int storeID, String promoCode) throws SQLException {
+    public static void addStorePromoCode(Connection conn, int storeID, String promoCode) throws SQLException {
         String query = "UPDATE Store SET codes = ? WHERE id = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -583,16 +586,16 @@ public class WearShareServer {
             }
         }
     }
-    
-    public static String getLocation(Connection conn, int ID, int typeOfClient) throws SQLException{
+
+    public static String getLocation(Connection conn, int ID, int typeOfClient) throws SQLException {
         String query = "SELECT location from " + getTableName(typeOfClient) + " WHERE ID = ?";
-        
-        try(PreparedStatement stmt = conn.prepareStatement(query)){
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, ID);
-            try(ResultSet rs = stmt.executeQuery()){
-                if(rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
                     return rs.getString("location");
-                }else{
+                } else {
                     return "null";
                 }
             }

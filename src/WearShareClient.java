@@ -176,6 +176,7 @@ public class WearShareClient {
                 } else {
                     // will exchange points
                     recv = inServer.nextLine();
+                    System.out.println("server: " +recv);
                 }
 
             } // for Association operations
