@@ -178,7 +178,7 @@ public class WearShareClient {
                 } else if (typeOfUser == 3) { // For Store operations
                     //*42
                     // Receive message for editing promotion or adding promotion code
-                    recv = inServer.nextLine();
+                    //recv = inServer.nextLine();
                     System.out.println("server: " + recv);
                     int storeAction = validateStoreAction(inUser); // Validate and get store action
                     System.out.println("Store action: " + (storeAction == 1 ? "Edit promotion" : "Add code"));
