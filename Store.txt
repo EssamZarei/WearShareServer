@@ -1,0 +1,8 @@
+id: 512345678
+name: 4
+password: 512345678
+phone_number: 4
+location: 512345678
+promotion: 50
+codes: null
+

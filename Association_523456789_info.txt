@@ -1,0 +1,28 @@
+Association ID: 523456789
+Association Name: AJed
+Association Phone: 523456789
+Association Location: jed
+
+Donor ID: 512345678
+Donor Name: essam
+Donor Phone: 512345678
+Donor Location: jed
+
+Clothes ID: 500000005
+Clothes Size: 15
+Clothes Type: Men
+
+Association ID: 523456789
+Association Name: AJed
+Association Phone: 523456789
+Association Location: jed
+
+Donor ID: 512345678
+Donor Name: essam
+Donor Phone: 512345678
+Donor Location: jed
+
+Clothes ID: 500000006
+Clothes Size: 22
+Clothes Type: Men
+

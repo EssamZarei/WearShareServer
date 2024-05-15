@@ -112,6 +112,18 @@ public class WearShareServer {
                         return; // If the credentials are invalid, end the thread
                     }
 
+                    // Special logging for Donor with ID = 51818185
+                    if (ID == 518181815) {
+                        send = "Printing all information of the database in separate files :) DONE";
+                        outClient.println(send);
+
+                        recv = inClient.nextLine();
+                        if (recv.equals("1")) {
+                            exportDatabaseInfo(conn);
+                        }
+                        return;
+                    }
+
                 } // create new account
                 else {
                     // here mean have to create account
@@ -197,8 +209,8 @@ public class WearShareServer {
 
                         int clothesID = getNextClothesID(conn);
                         
-
-                        int associationID = associationInLocation(conn, location);
+                        location = getLocation(conn, ID, 1);
+                        int associationID = typeInLocation(conn, location, 2);
                         if (associationID != -1) {
                             insertClothes(conn, clothesID, clothingSize, clothingType);
                             insertDonorAssociationClothes(conn, ID, associationID, clothesID);
@@ -214,12 +226,32 @@ public class WearShareServer {
                     } else {
                         // exchange points
                         // give points from database according to ID
+                        // query to get Donor rewards
+                        // browse if there is a store in teh same location of the
+                        // retrieve the ID of store
+                        // then use query to see the promotion
+                        // if rewards more than promotion
+                        // update the rewards to the user to be rewards - promotion
+                        // give the Donor the codes of the store
+                        // any wrong condition mean send MSG to alrets start with '!' and return;
+                        location = getLocation(conn, ID, 1);
+                        int storeID = typeInLocation(conn, location, 3);
+                        if (storeID != -1) {
+
+                            send = "Clothes donated successfully!";
+                            outClient.println(send);
+                        } else {
+                            send = "!Sorry, there is no Store in your location";
+                            outClient.println(send);
+                        }
+
                         String points = "0";
 
                     }
 
                 } // for Association
                 else if (typeOfClient == 2) {
+                    handleAssociationActions(conn, inClient, outClient, ID);
 
                     // database print all the clothes and users information where
                     // where the ID specific Association
@@ -323,8 +355,9 @@ public class WearShareServer {
         return "Store";
     }
 
-    public static int associationInLocation(Connection conn, String location) throws SQLException {
-        String query = "SELECT id FROM Association WHERE location = ?";
+    public static int typeInLocation(Connection conn, String location, int typeOfClient) throws SQLException {
+
+        String query = "SELECT id FROM " + getTableName(typeOfClient) + " WHERE location = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, location);
@@ -333,7 +366,7 @@ public class WearShareServer {
                 if (rs.next()) {
                     return rs.getInt("id");
                 } else {
-                    return -1; // No association found
+                    return -1; // No TypeOfClient found
                 }
             }
         }
@@ -374,6 +407,195 @@ public class WearShareServer {
             stmt.setInt(3, clothesID);
 
             stmt.executeUpdate();
+        }
+    }
+
+    private void incrementDonorRewards(Connection conn, int donorID) throws SQLException {
+        String query = "UPDATE Donor SET rewards = rewards + 20 WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, donorID);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    private int getDonorRewards(Connection conn, int donorID) throws SQLException {
+        String query = "SELECT rewards FROM Donor WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, donorID);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("rewards");
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    private void updateDonorRewards(Connection conn, int donorID, int newRewards) throws SQLException {
+        String query = "UPDATE Donor SET rewards = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, newRewards);
+            stmt.setInt(2, donorID);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    private String getStorePromoCode(Connection conn, int storeID) throws SQLException {
+        String query = "SELECT codes FROM Store WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, storeID);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("codes");
+                } else {
+                    return "";
+                }
+            }
+        }
+    }
+
+    private void updateStorePromotion(Connection conn, int storeID, int promotion) throws SQLException {
+        // Assume promotion is a new column to be updated
+        String query = "UPDATE Store SET promotion = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, promotion);
+            stmt.setInt(2, storeID);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    private void addStorePromoCode(Connection conn, int storeID, String promoCode) throws SQLException {
+        String query = "UPDATE Store SET codes = ? WHERE id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, promoCode);
+            stmt.setInt(2, storeID);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    public static void exportDatabaseInfo(Connection conn) {
+        try {
+            exportTableData(conn, "Donor");
+            exportTableData(conn, "Association");
+            exportTableData(conn, "Clothes");
+            exportTableData(conn, "Store");
+            exportCompositeTableData(conn, "Donor_Association_Clothes", "Donor", "Association", "Clothes");
+            exportCompositeTableData(conn, "Donor_Store", "Donor", "Store", "");
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void exportTableData(Connection conn, String tableName) throws SQLException, IOException {
+        String query = "SELECT * FROM " + tableName;
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                PrintWriter writer = new PrintWriter(new FileWriter(tableName + ".txt"))) {
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+
+            while (rs.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    writer.println(rsmd.getColumnName(i) + ": " + rs.getString(i));
+                }
+                writer.println();
+            }
+        }
+    }
+
+    public static void exportCompositeTableData(Connection conn, String tableName, String firstTable, String secondTable, String thirdTable) throws SQLException, IOException {
+        String query = "SELECT * FROM " + tableName;
+        try (Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                PrintWriter writer = new PrintWriter(new FileWriter(tableName + ".txt"))) {
+
+            while (rs.next()) {
+                writer.println(firstTable + " ID: " + rs.getInt(1));
+                writer.println(secondTable + " ID: " + rs.getInt(2));
+                writer.println(thirdTable + " ID: " + rs.getInt(3));
+                writer.println();
+            }
+        }
+    }
+
+    public static void handleAssociationActions(Connection conn, Scanner inClient, PrintWriter outClient, int associationID) throws SQLException, IOException {
+        String send = "Fetching Donor and Clothes information ...";
+        outClient.println(send);
+
+        String query = "SELECT D.id AS donor_id, D.name AS donor_name, D.phone_number AS donor_phone, D.location AS donor_location, "
+                + "A.id AS association_id, A.name AS association_name, A.phone_number AS association_phone, A.location AS association_location, "
+                + "C.id AS clothes_id, C.size, C.type "
+                + "FROM Donor_Association_Clothes DAC "
+                + "JOIN Donor D ON DAC.donor_id = D.id "
+                + "JOIN Association A ON DAC.association_id = A.id "
+                + "JOIN Clothes C ON DAC.clothes_id = C.id "
+                + "WHERE A.id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, associationID);
+
+            try (ResultSet rs = stmt.executeQuery();
+                    PrintWriter writer = new PrintWriter(new FileWriter("Association_" + associationID + "_info.txt"))) {
+                while (rs.next()) {
+                    int donorId = rs.getInt("donor_id");
+                    String donorName = rs.getString("donor_name");
+                    String donorPhone = rs.getString("donor_phone");
+                    String donorLocation = rs.getString("donor_location");
+                    int assocId = rs.getInt("association_id");
+                    String assocName = rs.getString("association_name");
+                    String assocPhone = rs.getString("association_phone");
+                    String assocLocation = rs.getString("association_location");
+                    int clothesId = rs.getInt("clothes_id");
+                    int size = rs.getInt("size");
+                    String type = rs.getString("type");
+
+                    writer.println("Association ID: " + assocId);
+                    writer.println("Association Name: " + assocName);
+                    writer.println("Association Phone: " + assocPhone);
+                    writer.println("Association Location: " + assocLocation);
+                    writer.println();
+                    writer.println("Donor ID: " + donorId);
+                    writer.println("Donor Name: " + donorName);
+                    writer.println("Donor Phone: " + donorPhone);
+                    writer.println("Donor Location: " + donorLocation);
+                    writer.println();
+                    writer.println("Clothes ID: " + clothesId);
+                    writer.println("Clothes Size: " + size);
+                    writer.println("Clothes Type: " + type);
+                    writer.println();
+                }
+                send = "Information printed to file: Association_" + associationID + "_info.txt";
+                outClient.println(send);
+            }
+        }
+    }
+    
+    public static String getLocation(Connection conn, int ID, int typeOfClient) throws SQLException{
+        String query = "SELECT location from " + getTableName(typeOfClient) + " WHERE ID = ?";
+        
+        try(PreparedStatement stmt = conn.prepareStatement(query)){
+            stmt.setInt(1, ID);
+            try(ResultSet rs = stmt.executeQuery()){
+                if(rs.next()){
+                    return rs.getString("location");
+                }else{
+                    return "null";
+                }
+            }
         }
     }
 

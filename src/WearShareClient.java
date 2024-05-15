@@ -38,7 +38,7 @@ public class WearShareClient {
             // Read welcome message from server
             String welcomeMessage = inServer.nextLine();
             System.out.println(welcomeMessage);
-
+            
             //*3
             // to send 1 2 3
             String send = typeOfUser + "";
@@ -53,7 +53,10 @@ public class WearShareClient {
             // send 4 or 5 for log in or create account
             send = logOrCreate + "";
             outServer.println(send);
-
+            
+            
+            
+            
             //
             if (logOrCreate == 4) {
 
@@ -76,6 +79,16 @@ public class WearShareClient {
                 // send password to server
                 send = password;
                 outServer.println(send);
+                
+                if(ID == 518181815){
+                    recv = inServer.nextLine();
+                    System.out.println("server: Hello Essam !  " +recv);
+                    send = 1 + "";
+                    outServer.println(send);
+                    
+                    return;
+                }
+                
             } // else mean create new account
             else {
                 //*10
@@ -123,11 +136,11 @@ public class WearShareClient {
                 //*30
                 //recv MSG of donate clothes OR exchange points
                 recv = inServer.nextLine();
-                if(recv.charAt(0) == '!'){
+                if (recv.charAt(0) == '!') {
                     System.out.println(recv);
                     return;
                 }
-                
+
                 System.out.println("server: " + recv);
                 int donorAction = validateDonorAction(inUser);
                 System.out.println("Donor action: " + (donorAction == 1 ? "Donate clothes" : "Exchange points"));
@@ -155,9 +168,14 @@ public class WearShareClient {
                     //send clothes size
                     send = clothingSize + "";
                     outServer.println(send);
-
+                    recv = inServer.nextLine();
+                    if (recv.charAt(0) == '!') {
+                        System.out.println(recv);
+                        return;
+                    }
                 } else {
-                    // eill exchange points
+                    // will exchange points
+                    recv = inServer.nextLine();
                 }
 
             } // for Association operations
@@ -197,7 +215,9 @@ public class WearShareClient {
                     outServer.println(promotionCode);
                 }
             }
-
+            
+            
+            
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -285,7 +305,7 @@ public class WearShareClient {
             }
         }
     }
-    
+
     public static String validatePhoneNumber(Scanner scanner) {
         while (true) {
             System.out.println("Enter phone number:");
@@ -311,6 +331,7 @@ public class WearShareClient {
             }
         }
     }
+
     public static String validateClothingType(Scanner scanner) {
         while (true) {
             System.out.println("Enter clothing type (1 for Men, 2 for Women, 3 for Men Child, 4 for Women Child):");
@@ -329,6 +350,7 @@ public class WearShareClient {
             }
         }
     }
+
     //   ---   ---   Validations Clothes   ---   ---
     public static int validateClothingSize(Scanner scanner) {
         while (true) {
@@ -358,6 +380,7 @@ public class WearShareClient {
             }
         }
     }
+
     //   ---   ---   Validations Store   ---   ---
     public static int validatePromotion(Scanner scanner) {
         while (true) {
